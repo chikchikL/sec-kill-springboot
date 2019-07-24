@@ -1,6 +1,7 @@
-package com.imooc.miaosha.exception;
+package com.example.seckill.exception;
 
-import com.imooc.miaosha.result.CodeMsg;
+
+import com.example.seckill.result.CodeMsg;
 
 public class GlobalException extends RuntimeException{
 

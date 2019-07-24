@@ -13,6 +13,7 @@ public interface UserDao {
     @Select("select * from user where id = #{id}")
     User getById(@Param("id") int id);
 
+    //测试注释
     @Insert("insert into user (id,name) values(#{id},#{name})")
     void insertUser(User user);
 

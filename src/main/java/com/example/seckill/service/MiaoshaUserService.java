@@ -52,23 +52,25 @@ public class MiaoshaUserService {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
 
-        //登录成功生成cookie
-        String token = UUIDUtil.uuid();
 
-        //将用户信息缓存到redis
-        redisService.set(MiaoshaUserKey.token,token,user);
-
-
-        Cookie cookie = new Cookie(COOKI_NAME_TOKEN, token);
-        cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds());
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        addCookie(response, user);
         return true;
 
     }
 
+    private void addCookie(HttpServletResponse response, MiaoshaUser user) {
+        //登录成功生成cookie
+        String token = UUIDUtil.uuid();
+        //将用户信息缓存到redis
+        redisService.set(MiaoshaUserKey.token,token,user);
+        Cookie cookie = new Cookie(COOKI_NAME_TOKEN, token);
+        cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds());
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
     //通过cookieToken获取用户
-    public MiaoshaUser getByToken(String token) {
+    public MiaoshaUser getByToken(HttpServletResponse response,String token) {
 
         if(StringUtils.isEmpty(token)){
             return null;
@@ -76,6 +78,11 @@ public class MiaoshaUserService {
 
         MiaoshaUser miaoshaUser =
                 redisService.get(MiaoshaUserKey.token, token, MiaoshaUser.class);
+
+        if(miaoshaUser != null){
+            //重新生成cookie，相当于延长有效期
+            addCookie(response,miaoshaUser);
+        }
 
         return miaoshaUser;
     }

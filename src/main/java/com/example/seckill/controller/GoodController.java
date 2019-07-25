@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 @RequestMapping("/goods")
 public class GoodController {
@@ -24,15 +26,17 @@ public class GoodController {
     RedisService redisService;
 
     @RequestMapping("/to_list")
-    public String toLogin(Model model,
-                          @CookieValue(value = MiaoshaUserService.COOKI_NAME_TOKEN,required = false) String cookieToken,
-                          @RequestParam(value = MiaoshaUserService.COOKI_NAME_TOKEN,required = false) String paramToken){
-        if(StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)){
-            return "login";
-        }
-        String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
-        MiaoshaUser user = userService.getByToken(token);
+    public String toGoodList(Model model,MiaoshaUser user){
         model.addAttribute("user",user);
         return "goods_list";
     }
+
+//    @RequestMapping("/to_detail")
+//    public String toGoodDetail(HttpServletResponse response,Model model,
+//                             @CookieValue(value = MiaoshaUserService.COOKI_NAME_TOKEN,required = false) String cookieToken,
+//                             @RequestParam(value = MiaoshaUserService.COOKI_NAME_TOKEN,required = false) String paramToken){
+//
+//
+//        return "goods_list";
+//    }
 }

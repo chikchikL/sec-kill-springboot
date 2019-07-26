@@ -8,7 +8,6 @@ import com.example.seckill.service.MiaoshaUserService;
 import com.example.seckill.service.RedisService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
-
-
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,9 +43,7 @@ public class GoodController {
                              Model model, MiaoshaUser user){
         model.addAttribute("user",user);
 
-        //查询商品列表
-        List<GoodsVo> goodsVos = goodsService.listGoodsVo();
-        model.addAttribute("goodslist",goodsVos);
+
 
 //        return "goods_list";
         //取缓存
@@ -57,6 +51,10 @@ public class GoodController {
         if(!StringUtils.isEmpty(html)){
             return html;
         }
+
+        //查询商品列表
+        List<GoodsVo> goodsVos = goodsService.listGoodsVo();
+        model.addAttribute("goodslist",goodsVos);
 
         //无缓存手动渲染
         WebContext springWebContext = new WebContext(request, response,

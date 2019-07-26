@@ -71,12 +71,25 @@ public class GoodController {
         return html;
     }
 
-    @RequestMapping("/to_detail/{goodsId}")
-    public String toGoodDetail(Model model, MiaoshaUser user,
+    @RequestMapping(value = "/to_detail/{goodsId}",produces = "text/html")
+    @ResponseBody
+    public String toGoodDetail(HttpServletRequest request, HttpServletResponse response,
+                               Model model, MiaoshaUser user,
                                @PathVariable("goodsId")Long goodsId){
         model.addAttribute("user",user);
 
-        //snowflake生成uniq_id，防止因为自增的主键造成数据库很容易遍历
+
+        //尝试取缓存,
+        //这里需要指定key为goodsId，商品列表不需要指定，但是详情页需要根据url中的商品id进行区别
+        /**
+         * 区分缓存粒度：商品列表-》页面缓存，商品详情-》url缓存
+         */
+        String html = redisService.get(GoodsKey.getGoodsDetail,String.valueOf(goodsId), String.class);
+        if(!StringUtils.isEmpty(html))
+            return html;
+
+
+        //商用中使用snowflake生成uniq_id，防止因为自增的主键造成数据库很容易遍历
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
 
         long startTime = goods.getStartDate().getTime();
@@ -107,7 +120,17 @@ public class GoodController {
         model.addAttribute("remainSeconds",remainSeconds);
         model.addAttribute("goods",goods);
 
-        return "goods_detail";
+        //无缓存手动渲染并添加缓存
+        WebContext springWebContext = new WebContext(request, response,
+                request.getServletContext(),
+                request.getLocale(), model.asMap());
+
+        html = thymeleafViewResolver.getTemplateEngine().process("goods_detail", springWebContext);
+        if(!StringUtils.isEmpty(html)){
+            redisService.set(GoodsKey.getGoodsDetail,String.valueOf(goodsId),html);
+        }
+
+        return html;
     }
 
 

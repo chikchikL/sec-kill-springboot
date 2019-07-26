@@ -5,7 +5,9 @@ import com.example.seckill.Vo.LoginVo;
 import com.example.seckill.dao.MiaoshaUserDao;
 import com.example.seckill.domain.MiaoshaUser;
 import com.example.seckill.exception.GlobalException;
+import com.example.seckill.redis.KeyPrefix;
 import com.example.seckill.redis.MiaoshaUserKey;
+import com.example.seckill.redis.UserKey;
 import com.example.seckill.result.CodeMsg;
 import com.example.seckill.util.MD5Util;
 import com.example.seckill.util.UUIDUtil;
@@ -27,7 +29,43 @@ public class MiaoshaUserService {
     RedisService redisService;
 
     public MiaoshaUser getById(long id){
-        return miaoshaUserDao.getById(id);
+
+        MiaoshaUser miaoshaUser = redisService.get(MiaoshaUserKey.id, String.valueOf(id), MiaoshaUser.class);
+        if(miaoshaUser != null)
+            return miaoshaUser;
+        miaoshaUser = miaoshaUserDao.getById(id);
+        if(miaoshaUser !=null){
+            //添加缓存
+            redisService.set(MiaoshaUserKey.id,String.valueOf(id),miaoshaUser);
+        }
+        return miaoshaUser;
+    }
+
+
+
+    public  boolean updatePassword(String token,long id,String password){
+        //取user对象
+        MiaoshaUser user = getById(id);
+        if(user == null)
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+
+        //更新数据库
+        MiaoshaUser toBeUpdate = new MiaoshaUser();
+        toBeUpdate.setId(id);
+        toBeUpdate.setPassword(MD5Util.formPassToDBPass(password,user.getSalt()));
+        miaoshaUserDao.update(toBeUpdate);
+
+        /**
+         * 当数据库中user更新，之前token和id保存的缓存中都有user信息，需要更新
+         *
+         */
+        //更新否则无法登陆
+        user.setPassword(toBeUpdate.getPassword());
+        redisService.set(MiaoshaUserKey.token,token,user);
+        //删除
+        redisService.delete(MiaoshaUserKey.id,String.valueOf(id));
+
+        return true;
     }
 
     public String login(HttpServletResponse response, LoginVo loginVo) {

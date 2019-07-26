@@ -1,11 +1,11 @@
 package com.example.seckill.service;
 
 import com.example.seckill.Vo.GoodsVo;
-import com.example.seckill.dao.GoodsDao;
 import com.example.seckill.dao.OrderDao;
 import com.example.seckill.domain.MiaoshaOrder;
 import com.example.seckill.domain.MiaoshaUser;
 import com.example.seckill.domain.OrderInfo;
+import com.example.seckill.redis.OrderKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +18,14 @@ public class OrderService {
     OrderDao orderDao;
 
     @Autowired
-    GoodsDao goodsDao;
+    RedisService redisService;
+
+
 
     public MiaoshaOrder getMiaoshaOrderByUserIdGoodsId(Long userId, Long goodsId) {
-
-        MiaoshaOrder miaoshaOrder = orderDao.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
-
-        return miaoshaOrder;
+        //此处改为直接从缓存取
+        return redisService.get(OrderKey.getMiaoshaOrderByUidGid,
+                userId + "_" + goodsId, MiaoshaOrder.class);
     }
 
 
@@ -50,6 +51,12 @@ public class OrderService {
         miaoshaOrder.setOrderId(orderId);
         miaoshaOrder.setUserId(user.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
+
+
+        //下单完成时将订单信息写入缓存
+        redisService.set(OrderKey.getMiaoshaOrderByUidGid,
+                user.getId() + "_" + goods.getId(),
+                miaoshaOrder);
 
         return orderInfo;
     }

@@ -2,8 +2,6 @@ package com.example.seckill.service;
 
 
 import com.example.seckill.Vo.GoodsVo;
-import com.example.seckill.dao.GoodsDao;
-import com.example.seckill.domain.Goods;
 import com.example.seckill.domain.MiaoshaUser;
 import com.example.seckill.domain.OrderInfo;
 import org.springframework.beans.factory.annotation.Autowired;

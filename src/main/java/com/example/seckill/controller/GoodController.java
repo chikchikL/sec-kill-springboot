@@ -1,8 +1,10 @@
 package com.example.seckill.controller;
 
+import com.example.seckill.Vo.GoodsDetailVo;
 import com.example.seckill.Vo.GoodsVo;
 import com.example.seckill.domain.MiaoshaUser;
 import com.example.seckill.redis.GoodsKey;
+import com.example.seckill.result.Result;
 import com.example.seckill.service.GoodsService;
 import com.example.seckill.service.MiaoshaUserService;
 import com.example.seckill.service.RedisService;
@@ -69,9 +71,55 @@ public class GoodController {
         return html;
     }
 
-    @RequestMapping(value = "/to_detail/{goodsId}",produces = "text/html")
+    /**
+     * 前后端分离，只返回json对象
+     */
+    @RequestMapping(value = "/detail/{goodsId}")
     @ResponseBody
-    public String toGoodDetail(HttpServletRequest request, HttpServletResponse response,
+    public Result<GoodsDetailVo> toGoodDetail(HttpServletRequest request, HttpServletResponse response,
+                                              Model model, MiaoshaUser user,
+                                              @PathVariable("goodsId")Long goodsId){
+
+        //商用中使用snowflake生成uniq_id，防止因为自增的主键造成数据库很容易遍历
+        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
+
+        long startTime = goods.getStartDate().getTime();
+        long endTime = goods.getEndDate().getTime();
+        long now = System.currentTimeMillis();
+
+
+        int miaoshaStatus = 0;
+        int remainSeconds = 0;
+
+        if(now < startTime){
+            //秒杀未开始，倒计时
+            miaoshaStatus = 0;
+            remainSeconds = (int)(startTime - now)/1000;
+
+        }else if(now > endTime){
+            //秒杀结束
+            miaoshaStatus = 2;
+            remainSeconds = -1;
+
+        }else{
+            //秒杀进行中
+            miaoshaStatus = 1;
+            remainSeconds = 0;
+        }
+
+        GoodsDetailVo vo = new GoodsDetailVo();
+        vo.setGoods(goods);
+        vo.setUser(user);
+        vo.setMiaoshaStatus(miaoshaStatus);
+        vo.setRemainSeconds(remainSeconds);
+
+        return Result.success(vo);
+    }
+
+
+    @RequestMapping(value = "/to_detail2/{goodsId}",produces = "text/html")
+    @ResponseBody
+    public String toGoodDetail2(HttpServletRequest request, HttpServletResponse response,
                                Model model, MiaoshaUser user,
                                @PathVariable("goodsId")Long goodsId){
         model.addAttribute("user",user);
@@ -130,7 +178,4 @@ public class GoodController {
 
         return html;
     }
-
-
-
 }

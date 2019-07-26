@@ -21,9 +21,6 @@ public class MiaoshaService {
 
     /**
      * 秒杀事务 减库存 下订单 写入秒杀订单（事务）
-     * @param user
-     * @param goods
-     * @return
      */
     @Transactional
     public OrderInfo miaosha(MiaoshaUser user, GoodsVo goods) {

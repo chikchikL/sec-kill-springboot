@@ -16,11 +16,11 @@ public class OrderInfo {
 
     private Integer goodsCount;
 
-    private Double goodsPrice;
+    private BigDecimal goodsPrice;
 
-    private Integer orderChannel;
+    private Byte orderChannel;
 
-    private Integer status;
+    private Byte status;
 
     private Date createDate;
 
@@ -74,27 +74,27 @@ public class OrderInfo {
         this.goodsCount = goodsCount;
     }
 
-    public Double getGoodsPrice() {
+    public BigDecimal getGoodsPrice() {
         return goodsPrice;
     }
 
-    public void setGoodsPrice(Double goodsPrice) {
+    public void setGoodsPrice(BigDecimal goodsPrice) {
         this.goodsPrice = goodsPrice;
     }
 
-    public Integer getOrderChannel() {
+    public Byte getOrderChannel() {
         return orderChannel;
     }
 
-    public void setOrderChannel(Integer orderChannel) {
+    public void setOrderChannel(Byte orderChannel) {
         this.orderChannel = orderChannel;
     }
 
-    public Integer getStatus() {
+    public Byte getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(Byte status) {
         this.status = status;
     }
 

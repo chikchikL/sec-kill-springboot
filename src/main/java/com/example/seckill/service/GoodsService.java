@@ -24,10 +24,9 @@ public class GoodsService {
         return goodsDao.getGoodsVoByGoodsId(goodsId);
     }
 
-    public void reduceStock(Goods goods){
+    public void reduceStock(GoodsVo goods){
         MiaoshaGoods g = new MiaoshaGoods();
-        g.setId(goods.getId());
-        g.setStockCount(goods.getGoodsStock() - 1);
+        g.setGoodsId(goods.getId());
         goodsDao.reduceStock(g);
     }
 

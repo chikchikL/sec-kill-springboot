@@ -33,7 +33,7 @@ public class MiaoshaController {
     MiaoshaService miaoshaService;
 
     @RequestMapping("do_miaosha")
-    public String list(Model model, MiaoshaUser user,
+    public String miaosha(Model model, MiaoshaUser user,
                        @RequestParam("goodsId")Long goodsId){
         model.addAttribute("user",user);
 

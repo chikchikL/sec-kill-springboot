@@ -4,13 +4,24 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 
 @SpringBootApplication
-public class SecKillApplication {
+public class SecKillApplication  {
 
     public static void main(String[] args) {
         SpringApplication.run(SecKillApplication.class, args);
     }
-
+//extends SpringBootServletInitializer
+//    /**
+//     * 使得支持war包启动
+//     * @param builder
+//     * @return
+//     */
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+//        return builder.sources(SecKillApplication.class);
+//    }
 }

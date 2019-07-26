@@ -1,7 +1,5 @@
 package com.example.seckill.domain;
 
-import java.math.BigDecimal;
-
 public class Goods {
     private Long id;
 

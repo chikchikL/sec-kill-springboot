@@ -127,7 +127,7 @@ public class MiaoshaController implements InitializingBean {
     @ResponseBody
     public Result<Boolean> reset(Model model){
         List<GoodsVo> goodsVos = goodsService.listGoodsVo();
-        for (GoodsVo vo:goodsVos) {notify();
+        for (GoodsVo vo:goodsVos) {
 
             vo.setStockCount(10);
             redisService.set(GoodsKey.getMiaoshaGoodsStock,String.valueOf(vo.getId()),10);

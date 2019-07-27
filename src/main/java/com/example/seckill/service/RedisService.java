@@ -61,7 +61,7 @@ public class RedisService {
     }
 
     public <T> boolean exists(KeyPrefix prefix
-            , String key, T value){
+            , String key){
         Jedis jedis = null;
         try{
             jedis = jedisPool.getResource();
@@ -147,7 +147,7 @@ public class RedisService {
     }
 
     //字符串转化为对象
-    private <T> T strToBean(String str,Class<T> clazz) {
+    public static  <T> T strToBean(String str,Class<T> clazz) {
         if(str == null || str.length() <= 0 || clazz == null){
             return null;
         }

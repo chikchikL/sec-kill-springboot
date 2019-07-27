@@ -24,10 +24,17 @@ public class GoodsService {
         return goodsDao.getGoodsVoByGoodsId(goodsId);
     }
 
-    public void reduceStock(GoodsVo goods){
+    /**
+     * 减少库存，并判断是否减少成功
+     *
+     * @param goods
+     * @return
+     */
+    public boolean reduceStock(GoodsVo goods){
         MiaoshaGoods g = new MiaoshaGoods();
         g.setGoodsId(goods.getId());
-        goodsDao.reduceStock(g);
+        int ret = goodsDao.reduceStock(g);
+        return ret>0;
     }
 
 }

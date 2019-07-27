@@ -39,41 +39,41 @@ public class SampleController {
     public Result<User> getUser(){
         return Result.success(userService.getById(1));
     }
-
-    @RequestMapping("/mq/direct")
-    @ResponseBody
-    public Result<String> mq(){
-        mqSender.send("rmq测试消息");
-////        mqSender.sendTopic("topic测试消息");
+//
+//    @RequestMapping("/mq/direct")
+//    @ResponseBody
+//    public Result<String> mq(){
+//        mqSender.send("rmq测试消息");
+//////        mqSender.sendTopic("topic测试消息");
+////
+////        mqSender.sendFanout("fanout测试消息");
+//        return Result.success("direct测试成功");
+//    }
+//
+//    @RequestMapping("/mq/topic")
+//    @ResponseBody
+//    public Result<String> mqTopic(){
+//        mqSender.sendTopic("topic测试消息");
+//
+//        return Result.success("topic测试成功");
+//    }
+//
+//    @RequestMapping("/mq/fanout")
+//    @ResponseBody
+//    public Result<String> mqFanout(){
 //
 //        mqSender.sendFanout("fanout测试消息");
-        return Result.success("direct测试成功");
-    }
-
-    @RequestMapping("/mq/topic")
-    @ResponseBody
-    public Result<String> mqTopic(){
-        mqSender.sendTopic("topic测试消息");
-
-        return Result.success("topic测试成功");
-    }
-
-    @RequestMapping("/mq/fanout")
-    @ResponseBody
-    public Result<String> mqFanout(){
-
-        mqSender.sendFanout("fanout测试消息");
-        return Result.success("fanout测试成功");
-    }
-
-
-    @RequestMapping("/mq/headers")
-    @ResponseBody
-    public Result<String> mqHeaders(){
-
-        mqSender.sendHeader("headers测试消息");
-        return Result.success("headers测试成功");
-    }
+//        return Result.success("fanout测试成功");
+//    }
+//
+//
+//    @RequestMapping("/mq/headers")
+//    @ResponseBody
+//    public Result<String> mqHeaders(){
+//
+//        mqSender.sendHeader("headers测试消息");
+//        return Result.success("headers测试成功");
+//    }
 
     @RequestMapping("/tx")
     @ResponseBody

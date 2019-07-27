@@ -27,8 +27,6 @@ public class MiaoshaService {
         goodsService.reduceStock(goods);
 
         //下订单 写入秒杀订单
-        OrderInfo orderInfo = orderService.createOrder(user,goods);
-
-        return orderInfo;
+        return orderService.createOrder(user,goods);
     }
 }

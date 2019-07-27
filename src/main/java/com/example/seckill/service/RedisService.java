@@ -130,7 +130,7 @@ public class RedisService {
         }
     }
 
-    private <T> String beanToStr(T value) {
+    public static  <T> String beanToStr(T value) {
         if(value == null)
             return null;
         Class<?> clazz = value.getClass();

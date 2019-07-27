@@ -31,25 +31,25 @@ public class UserUtil {
 		}
 		System.out.println("create user");
 //		//插入数据库
-		Connection conn = DBUtil.getConn();
-		String sql = "insert into miaosha_user(login_count, nickname, register_date, salt, password, id)values(?,?,?,?,?,?)";
-		PreparedStatement pstmt = conn.prepareStatement(sql);
-		for(int i=0;i<users.size();i++) {
-			MiaoshaUser user = users.get(i);
-			pstmt.setInt(1, user.getLoginCount());
-			pstmt.setString(2, user.getNickname());
-			pstmt.setTimestamp(3, new Timestamp(user.getRegisterDate().getTime()));
-			pstmt.setString(4, user.getSalt());
-			pstmt.setString(5, user.getPassword());
-			pstmt.setLong(6, user.getId());
-			pstmt.addBatch();
-		}
-		pstmt.executeBatch();
-		pstmt.close();
-		conn.close();
-		System.out.println("insert to db");
+//		Connection conn = DBUtil.getConn();
+//		String sql = "insert into miaosha_user(login_count, nickname, register_date, salt, password, id)values(?,?,?,?,?,?)";
+//		PreparedStatement pstmt = conn.prepareStatement(sql);
+//		for(int i=0;i<users.size();i++) {
+//			MiaoshaUser user = users.get(i);
+//			pstmt.setInt(1, user.getLoginCount());
+//			pstmt.setString(2, user.getNickname());
+//			pstmt.setTimestamp(3, new Timestamp(user.getRegisterDate().getTime()));
+//			pstmt.setString(4, user.getSalt());
+//			pstmt.setString(5, user.getPassword());
+//			pstmt.setLong(6, user.getId());
+//			pstmt.addBatch();
+//		}
+//		pstmt.executeBatch();
+//		pstmt.close();
+//		conn.close();
+//		System.out.println("insert to db");
 		//登录，生成token
-		String urlString = "http://39.107.139.231:8080/login/do_login";
+		String urlString = "http://localhost:8080/login/do_login";
 		File file = new File("tokens.txt");
 		if(file.exists()) {
 			file.delete();
@@ -93,6 +93,6 @@ public class UserUtil {
 	}
 	
 	public static void main(String[] args)throws Exception {
-		createUser(5000);
+		createUser(3000);
 	}
 }

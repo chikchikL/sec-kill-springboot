@@ -7,6 +7,8 @@ import com.example.seckill.domain.MiaoshaUser;
 import com.example.seckill.domain.OrderInfo;
 import com.example.seckill.rabbitmq.MQSender;
 import com.example.seckill.redis.GoodsKey;
+import com.example.seckill.redis.MiaoshaKey;
+import com.example.seckill.redis.OrderKey;
 import com.example.seckill.result.CodeMsg;
 import com.example.seckill.result.Result;
 import com.example.seckill.service.*;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.nio.charset.CoderMalfunctionError;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -45,6 +48,10 @@ public class MiaoshaController implements InitializingBean {
     @Autowired
     MQSender sender;
 
+    //所有线程共享的hashMap，用来标记一个goodsId对应的商品是否都被秒杀完毕，
+    //这样可以过滤掉重复的redis请求
+    private HashMap<Long, Boolean> localOverMap = new HashMap<>();
+
     //因为涉及数据库插入数据，应该用post方法
     //get post区别
     //get 幂等性，无论调用多少次对服务端数据无影响
@@ -59,9 +66,16 @@ public class MiaoshaController implements InitializingBean {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
 
+
+        //已经秒杀结束则不再更新redis中库存数量，减少网络开销
+        if(localOverMap.get(goodsId) != null && localOverMap.get(goodsId)){
+            return Result.error(CodeMsg.MIAO_SHA_OVER);
+        }
+
         //redis预减少库存，如果已经秒杀完了，直接返回
         Long remain = redisService.decr(GoodsKey.getMiaoshaGoodsStock, String.valueOf(goodsId));
         if(remain < 0){
+            localOverMap.put(goodsId,true);
             return Result.error(CodeMsg.MIAO_SHA_OVER);
         }
 
@@ -109,6 +123,23 @@ public class MiaoshaController implements InitializingBean {
 */
     }
 
+    @RequestMapping(value = "/reset",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<Boolean> reset(Model model){
+        List<GoodsVo> goodsVos = goodsService.listGoodsVo();
+        for (GoodsVo vo:goodsVos) {notify();
+
+            vo.setStockCount(10);
+            redisService.set(GoodsKey.getMiaoshaGoodsStock,String.valueOf(vo.getId()),10);
+            localOverMap.put(vo.getId(),false);
+        }
+
+        redisService.delete(OrderKey.getMiaoshaOrderByUidGid);
+        redisService.delete(MiaoshaKey.isGoodsOver);
+        miaoshaService.reset(goodsVos);
+        return Result.success(true);
+    }
+
     /**
      * 系统初始化时的回调
      * @throws Exception
@@ -122,6 +153,7 @@ public class MiaoshaController implements InitializingBean {
         //系统初始化将秒杀商品的库存加载到redis
         for(GoodsVo vo:goodsVos){
             redisService.set(GoodsKey.getMiaoshaGoodsStock,String.valueOf(vo.getId()),vo.getStockCount());
+            localOverMap.put(vo.getId(), false);
         }
     }
 

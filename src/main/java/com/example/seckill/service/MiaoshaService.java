@@ -52,6 +52,14 @@ public class MiaoshaService {
     }
 
 
+    /**
+     * 客户端轮询获取秒杀结果的业务逻辑，这里的逻辑在于，最多往消息队列中插入stock个消息请求
+     * 所以每个消息被成功消费时，都是可以轮询秒杀请求的结果的，只要没秒杀成功或者秒杀
+     * 完代表当前请求还有机会
+     * @param id
+     * @param goodsId
+     * @return
+     */
     public long getMiaoshaResult(Long id, Long goodsId) {
         MiaoshaOrder miaoshaorder = orderService.getMiaoshaOrderByUserIdGoodsId(id, goodsId);
         if(miaoshaorder != null)

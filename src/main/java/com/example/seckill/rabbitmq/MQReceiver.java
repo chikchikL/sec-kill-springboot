@@ -88,8 +88,7 @@ public class MQReceiver {
         //减库存 下订单 写入秒杀订单（事务）
         //秒杀需要的是秒杀用户和商品信息生成订单信息
         //因为秒杀成功后会进入订单详情页面
-        OrderInfo orderInfo = miaoshaService.miaosha(user,goods);
+        miaoshaService.miaosha(user,goods);
 
-        return;
     }
 }

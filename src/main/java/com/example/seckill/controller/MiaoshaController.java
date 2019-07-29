@@ -12,14 +12,13 @@ import com.example.seckill.redis.OrderKey;
 import com.example.seckill.result.CodeMsg;
 import com.example.seckill.result.Result;
 import com.example.seckill.service.*;
+import com.example.seckill.util.MD5Util;
+import com.example.seckill.util.UUIDUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.CoderMalfunctionError;
 import java.util.HashMap;
@@ -56,15 +55,21 @@ public class MiaoshaController implements InitializingBean {
     //get post区别
     //get 幂等性，无论调用多少次对服务端数据无影响
     //post
-    @RequestMapping(value = "/do_miaosha",method = RequestMethod.POST)
+    @RequestMapping(value = "/{path}/do_miaosha",method = RequestMethod.POST)
     @ResponseBody//返回秒杀的订单信息
     public Result<Integer> miaosha(Model model, MiaoshaUser user,
+                                     @PathVariable("path")String path,
                                      @RequestParam("goodsId")Long goodsId){
         model.addAttribute("user",user);
 
         if(user == null){
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+
+        //验证path
+        boolean check = miaoshaService.checkPath(user,goodsId,path);
+        if(!check)
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
 
 
         //已经秒杀结束则不再更新redis中库存数量，减少网络开销
@@ -121,6 +126,27 @@ public class MiaoshaController implements InitializingBean {
 
         return Result.success(orderInfo);
 */
+    }
+
+
+    /**
+     * 获取随机生成的path
+     * @param model
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @RequestMapping(value = "/path",method = RequestMethod.GET)
+    @ResponseBody
+    public Result<String> miaoshaPath(Model model,MiaoshaUser user,
+                                      @RequestParam("goodsId")Long goodsId){
+        model.addAttribute("user",user);
+        if(user == null){
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+
+        String path = miaoshaService.createPath(user,goodsId);
+        return Result.success(path);
     }
 
     @RequestMapping(value = "/reset",method = RequestMethod.GET)

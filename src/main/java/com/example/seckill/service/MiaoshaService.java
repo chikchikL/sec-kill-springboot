@@ -6,6 +6,8 @@ import com.example.seckill.domain.MiaoshaOrder;
 import com.example.seckill.domain.MiaoshaUser;
 import com.example.seckill.domain.OrderInfo;
 import com.example.seckill.redis.MiaoshaKey;
+import com.example.seckill.util.MD5Util;
+import com.example.seckill.util.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,5 +83,32 @@ public class MiaoshaService {
     public void reset(List<GoodsVo> goodsVos) {
         goodsService.resetStock(goodsVos);
         orderService.deleteOrders();
+    }
+
+
+    /**
+     * 验证请求的path是否正确
+     * @param user
+     * @param goodsId
+     * @param path
+     * @return
+     */
+    public boolean checkPath(MiaoshaUser user, Long goodsId, String path) {
+
+        if(user == null || path == null)
+            return false;
+
+
+
+        String pathOld = redisService.get(MiaoshaKey.getMiaoshaPath, user.getId() + "_" + goodsId, String.class);
+
+        return path.equals(pathOld);
+    }
+
+    public String createPath(MiaoshaUser user, Long goodsId) {
+
+        String path = MD5Util.md5(UUIDUtil.uuid() + "123456");
+        redisService.set(MiaoshaKey.getMiaoshaPath,user.getId() +"_"+ goodsId,path);
+        return path;
     }
 }

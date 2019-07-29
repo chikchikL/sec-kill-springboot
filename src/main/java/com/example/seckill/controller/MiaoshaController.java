@@ -1,11 +1,13 @@
 package com.example.seckill.controller;
 
 import com.example.seckill.Vo.GoodsVo;
+import com.example.seckill.access.AccessLimit;
 import com.example.seckill.domain.MiaoshaMessage;
 import com.example.seckill.domain.MiaoshaOrder;
 import com.example.seckill.domain.MiaoshaUser;
 import com.example.seckill.domain.OrderInfo;
 import com.example.seckill.rabbitmq.MQSender;
+import com.example.seckill.redis.AccessKey;
 import com.example.seckill.redis.GoodsKey;
 import com.example.seckill.redis.MiaoshaKey;
 import com.example.seckill.redis.OrderKey;
@@ -21,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
@@ -140,15 +143,20 @@ public class MiaoshaController implements InitializingBean {
      * @param goodsId
      * @return
      */
+    @AccessLimit(seconds = 5,maxCount = 5,needLogin = true)
     @RequestMapping(value = "/path",method = RequestMethod.GET)
     @ResponseBody
-    public Result<String> miaoshaPath(Model model,MiaoshaUser user,
+    public Result<String> miaoshaPath(HttpServletRequest request,
+                                      Model model, MiaoshaUser user,
                                       @RequestParam("goodsId")Long goodsId,
-                                      @RequestParam("verifyCode")Integer verifyCode){
+                                      @RequestParam(value = "verifyCode",defaultValue = "0")Integer verifyCode){
         model.addAttribute("user",user);
         if(user == null){
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+
+
+
 
         //获取path前验证verifyCode
         boolean verified = miaoshaService.checkVerifyCode(user,goodsId,verifyCode);

@@ -1,5 +1,6 @@
 package com.example.seckill.config;
 
+import com.example.seckill.access.UserContext;
 import com.example.seckill.domain.MiaoshaUser;
 import com.example.seckill.redis.MiaoshaUserKey;
 import com.example.seckill.service.MiaoshaUserService;
@@ -39,31 +40,8 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
      */
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
-        HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
-        HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
-
-        String paramToken = request.getParameter(MiaoshaUserService.COOKI_NAME_TOKEN);
-        String cookieToken = getCookieValue(request,MiaoshaUserService.COOKI_NAME_TOKEN);
-
-        if(StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)){
-            return null;
-        }
-
-        String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
-
-        return userService.getByToken(response,token);
+        return UserContext.getUser();
     }
 
-    private String getCookieValue(HttpServletRequest request, String cookiNameToken) {
 
-        Cookie[] cookies = request.getCookies();
-        if(cookies == null || cookies.length <=0)
-            return null;
-        for (Cookie cookie :cookies) {
-            if(cookie.getName().equals(cookiNameToken)){
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
 }

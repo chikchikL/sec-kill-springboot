@@ -1,8 +1,13 @@
 package com.example.seckill.offer;
 
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.util.Arrays;
 
+@Component("")
 public class partition {
 
 

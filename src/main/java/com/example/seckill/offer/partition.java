@@ -38,7 +38,7 @@ public class partition {
 
         }
 
-        return new int[]{less + 1,more};
+        return new int[]{less + 1,more-1};
 
 
     }

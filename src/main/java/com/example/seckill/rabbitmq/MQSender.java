@@ -18,38 +18,38 @@ public class MQSender {
     AmqpTemplate amqpTemplate;
 
 
-//    public void send(Object msg){
-//        String msgStr = RedisService.beanToStr(msg);
-//        log.info("send message" + msgStr);
-//        amqpTemplate.convertAndSend(MQConfig.QUEUE,msg);
-//
-//    }
-//
-//    public void sendTopic(Object msg){
-//        String msgStr = RedisService.beanToStr(msg);
-//        log.info("send message" + msgStr);
-//        amqpTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE,MQConfig.ROUTING_KEY1,msgStr+"1");
-//        amqpTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE,MQConfig.ROUTING_KEY2,msgStr+"2");
-//
-//
-//    }
-//
-//    public void sendFanout(Object msg){
-//        String str = RedisService.beanToStr(msg);
-//        log.info("send fanout msg"+ str);
-//        amqpTemplate.convertAndSend(MQConfig.FANOUT_EXCHANGE,null,str);
-//    }
-//
-//    public void sendHeader(Object msg){
-//        String msgStr = RedisService.beanToStr(msg);
-//        log.info("send header msg"+msgStr);
-//        MessageProperties properties = new MessageProperties();
-//        properties.setHeader("header1","val1");
-//        properties.setHeader("header2","val2");
-//        Message message = new Message(msgStr.getBytes(), properties);
-//        amqpTemplate.convertAndSend(MQConfig.HEADERS_EXCHANGE,null,message);
-//
-//    }
+    public void send(Object msg){
+        String msgStr = RedisService.beanToStr(msg);
+        log.info("send message" + msgStr);
+        amqpTemplate.convertAndSend(MQConfig.QUEUE,msg);
+
+    }
+
+    public void sendTopic(Object msg){
+        String msgStr = RedisService.beanToStr(msg);
+        log.info("send message" + msgStr);
+        amqpTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE,MQConfig.ROUTING_KEY1,msgStr+"1");
+        amqpTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE,MQConfig.ROUTING_KEY2,msgStr+"2");
+
+
+    }
+
+    public void sendFanout(Object msg){
+        String str = RedisService.beanToStr(msg);
+        log.info("send fanout msg"+ str);
+        amqpTemplate.convertAndSend(MQConfig.FANOUT_EXCHANGE,null,str);
+    }
+
+    public void sendHeader(Object msg){
+        String msgStr = RedisService.beanToStr(msg);
+        log.info("send header msg"+msgStr);
+        MessageProperties properties = new MessageProperties();
+        properties.setHeader("header1","val1");
+        properties.setHeader("header2","val2");
+        Message message = new Message(msgStr.getBytes(), properties);
+        amqpTemplate.convertAndSend(MQConfig.HEADERS_EXCHANGE,null,message);
+
+    }
 
     /**
      * 将秒杀信息发送到消息队列

@@ -30,10 +30,10 @@ public class Dp2 {
 
     }
 
-
     //回溯找到最优解,从num,capacity位置开始找
     int[] solution ;
     public void findSolution(int i,int j){
+
         //递归的截止条件
         if(i<=0)
             return;
@@ -51,14 +51,21 @@ public class Dp2 {
     }
 
     public static void main(String[] args){
-        Dp2 dp2 = new Dp2();
-        int i = dp2.dp2();
-        System.out.println("最大价值"+i);
+//        Dp2 dp2 = new Dp2();
+//        int i = dp2.dp2();
+//        System.out.println("最大价值"+i);
+//
+//        //回溯找到具体解
+//        dp2.solution = new int[dp2.num+1];
+//
+//        dp2.findSolution(dp2.num,dp2.capacity);
+//        System.out.println("结果:"+ Arrays.toString(dp2.solution));
 
-        //回溯找到具体解
-        dp2.solution = new int[dp2.num+1];
+        int [] arr = new int[100];
+        for(int i = 0;i< arr.length;++i)
+            arr[i] = i;
 
-        dp2.findSolution(dp2.num,dp2.capacity);
-        System.out.println("结果:"+ Arrays.toString(dp2.solution));
+        int[] newints = Arrays.copyOf(arr, 50);
+        System.out.println(Arrays.toString(newints));
     }
 }

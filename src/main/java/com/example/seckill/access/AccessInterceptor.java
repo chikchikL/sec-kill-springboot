@@ -18,6 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashSet;
 
 /**
  * 实现一个拦截器
@@ -87,6 +88,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
             }
 
         }
+
         return true;
     }
 

@@ -154,10 +154,6 @@ public class MiaoshaController implements InitializingBean {
         if(user == null){
             return Result.error(CodeMsg.SESSION_ERROR);
         }
-
-
-
-
         //获取path前验证verifyCode
         boolean verified = miaoshaService.checkVerifyCode(user,goodsId,verifyCode);
         if(!verified){
@@ -173,7 +169,6 @@ public class MiaoshaController implements InitializingBean {
     public Result<Boolean> reset(Model model){
         List<GoodsVo> goodsVos = goodsService.listGoodsVo();
         for (GoodsVo vo:goodsVos) {
-
             vo.setStockCount(10);
             redisService.set(GoodsKey.getMiaoshaGoodsStock,String.valueOf(vo.getId()),10);
             localOverMap.put(vo.getId(),false);

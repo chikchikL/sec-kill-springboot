@@ -1,15 +1,16 @@
 package com.example.seckill.offer;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 //二维动态规划
 public class Dp2 {
-
     int [][] dp;
     int num,capacity;
     int w[] = { 0 , 2 , 3 , 4 , 5 };
     int v[] = { 0 , 3 , 4 , 5 , 6 };
     public int dp2(){
+        new HashMap<>().clear();
 
         num = 4;
         capacity = 8;

@@ -45,9 +45,7 @@ public class GoodController {
                              Model model, MiaoshaUser user){
         model.addAttribute("user",user);
 
-
-
-//        return "goods_list";
+//      return "goods_list";
         //取缓存
         String html = redisService.get(GoodsKey.getGoodsList, "", String.class);
         if(!StringUtils.isEmpty(html)){

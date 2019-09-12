@@ -78,7 +78,6 @@ public class MiaoshaController implements InitializingBean {
         if(!check)
             return Result.error(CodeMsg.REQUEST_ILLEGAL);
 
-
         //已经秒杀结束则不再更新redis中库存数量，减少网络开销
         if(localOverMap.get(goodsId) != null && localOverMap.get(goodsId)){
             return Result.error(CodeMsg.MIAO_SHA_OVER);
@@ -95,7 +94,7 @@ public class MiaoshaController implements InitializingBean {
         MiaoshaOrder miaoshaOrder = orderService.getMiaoshaOrderByUserIdGoodsId(user.getId(), goodsId);
         if(miaoshaOrder!=null){
             return Result.error(CodeMsg.REPEATE_MIAOSHA);
-        }
+    }
 
         //如果没有秒杀到过，发送到消息队列
         MiaoshaMessage miaoshaMessage = new MiaoshaMessage();

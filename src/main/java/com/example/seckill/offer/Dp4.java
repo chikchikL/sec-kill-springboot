@@ -1,6 +1,8 @@
 package com.example.seckill.offer;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 //硬币问题
 public class Dp4 {
@@ -53,6 +55,7 @@ public class Dp4 {
                     min = temp + 1;
             }
 
+            ExecutorService executorService = Executors.newCachedThreadPool();
             rem.put(total,(min == Integer.MAX_VALUE) ? -1 : min);
             //如果没有成功的组合，直接返回-1
             return (min == Integer.MAX_VALUE) ? -1 : min;
@@ -68,7 +71,6 @@ public class Dp4 {
             dp[0] = 0;
 
             for(int i = 1;i<=total;++i){
-
                 //f(x) = min{f(x-cj),j=coins.length} + 1
                 int min = Integer.MAX_VALUE;
                 //尝试找到子问题的解，没有则返回-1

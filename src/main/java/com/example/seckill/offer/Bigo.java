@@ -1,4 +1,4 @@
-package com.example.seckill.access;
+package com.example.seckill.offer;
 
 import java.util.Scanner;
 
